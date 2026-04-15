@@ -94,7 +94,11 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:12p
       <div class="kval" id="k1">–</div>
       <div id="k5" style="margin-top:8px;font-size:11px;line-height:2;color:var(--ink);">–</div>
     </div>
-    <div class="kcard"><div class="klbl">누적 적립금 합계</div><div class="kval" id="k2">–</div></div>
+    <div class="kcard">
+      <div class="klbl">누적 적립금 합계</div>
+      <div class="kval" id="k2">–</div>
+      <div style="margin-top:6px;font-size:10px;color:var(--muted);">실비용 <span id="k2sub" style="font-family:var(--mono);color:var(--ink);font-weight:600;">–</span></div>
+    </div>
   </div>
   <div class="krow" style="grid-template-columns:repeat(6,1fr);">
     <div class="kcard"><div class="klbl">1주차</div><div class="kval" id="k3">–</div></div>
@@ -225,11 +229,11 @@ function renderKPI() {
     if (ai===-1) return 1; if (bi===-1) return -1;
     return ai-bi;
   });
-  const line1 = sorted.filter(([k])=>k==='S급'||k==='A급');
-  const line2 = sorted.filter(([k])=>k!=='S급'&&k!=='A급');
   document.getElementById('k5').innerHTML =
-    `<div>${line1.map(([k,v])=>`<span style="margin-right:12px;">${k} <strong>${v}</strong>명</span>`).join('')}</div>`+
-    `<div>${line2.map(([k,v])=>`<span style="margin-right:12px;">${k} <strong>${v}</strong>명</span>`).join('')}</div>`;
+    `<div>${sorted.map(([k,v])=>`<span style="margin-right:12px;">${k} <strong>${v}</strong>명</span>`).join('')}</div>`;
+  const accumTotal = ALL.reduce((s,m)=>s+toNum(m.accum),0);
+  const realCost = Math.round(accumTotal / 3);
+  document.getElementById('k2sub').innerHTML = realCost.toLocaleString() + '원';
 }
 
 function buildFilters() {
