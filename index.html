@@ -84,14 +84,19 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:12p
 
   <div id="errorBox" class="error-box" style="display:none;"></div>
 
-  <div class="krow">
-    <div class="kcard"><div class="klbl">총 인원</div><div class="kval" id="k1">–</div></div>
+  <div class="krow" style="grid-template-columns:repeat(2,1fr);">
+    <div class="kcard">
+      <div class="klbl">총 인원</div>
+      <div class="kval" id="k1">–</div>
+      <div id="k5" style="margin-top:8px;font-size:11px;line-height:2;color:var(--ink);">–</div>
+    </div>
     <div class="kcard"><div class="klbl">누적 적립금 합계</div><div class="kval" id="k2">–</div></div>
+  </div>
+  <div class="krow" style="grid-template-columns:repeat(4,1fr);">
     <div class="kcard"><div class="klbl">1주차 적립금 합계</div><div class="kval" id="k3">–</div></div>
-    <div class="kcard"><div class="klbl">2주차 적립 합계</div><div class="kval" id="k4">–</div></div>
-    <div class="kcard"><div class="klbl">3주차 적립 합계</div><div class="kval" id="k6">–</div></div>
-    <div class="kcard"><div class="klbl">4주차 적립 합계</div><div class="kval" id="k7">–</div></div>
-    <div class="kcard"><div class="klbl">구분별</div><div class="kval" id="k5" style="font-size:12px;line-height:1.8;">–</div></div>
+    <div class="kcard"><div class="klbl">2주차 적립금 합계</div><div class="kval" id="k4">–</div></div>
+    <div class="kcard"><div class="klbl">3주차 적립금 합계</div><div class="kval" id="k6">–</div></div>
+    <div class="kcard"><div class="klbl">4주차 적립금 합계</div><div class="kval" id="k7">–</div></div>
   </div>
 
   <div class="fbar">
@@ -170,10 +175,20 @@ function renderKPI() {
   document.getElementById('k4').innerHTML = fmtWon(ALL.reduce((s,m)=>s+toNum(m.w2),0));
   document.getElementById('k6').innerHTML = fmtWon(ALL.reduce((s,m)=>s+toNum(m.w3),0));
   document.getElementById('k7').innerHTML = fmtWon(ALL.reduce((s,m)=>s+toNum(m.w4),0));
+  const GBN_ORDER = ['S급','A급','바이럴'];
   const gm = {};
   ALL.forEach(m => { const g = m.gbn||'미분류'; gm[g]=(gm[g]||0)+1; });
-  document.getElementById('k5').innerHTML = Object.entries(gm)
-    .map(([k,v])=>`<span style="margin-right:8px;">${k} <strong>${v}</strong>명</span>`).join('');
+  const sorted = Object.entries(gm).sort((a,b) => {
+    const ai=GBN_ORDER.indexOf(a[0]), bi=GBN_ORDER.indexOf(b[0]);
+    if (ai===-1&&bi===-1) return a[0].localeCompare(b[0],'ko');
+    if (ai===-1) return 1; if (bi===-1) return -1;
+    return ai-bi;
+  });
+  const line1 = sorted.filter(([k])=>k==='S급'||k==='A급');
+  const line2 = sorted.filter(([k])=>k!=='S급'&&k!=='A급');
+  document.getElementById('k5').innerHTML =
+    `<div>${line1.map(([k,v])=>`<span style="margin-right:12px;">${k} <strong>${v}</strong>명</span>`).join('')}</div>`+
+    `<div>${line2.map(([k,v])=>`<span style="margin-right:12px;">${k} <strong>${v}</strong>명</span>`).join('')}</div>`;
 }
 
 function buildFilters() {
