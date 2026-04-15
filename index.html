@@ -92,11 +92,21 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:12p
     </div>
     <div class="kcard"><div class="klbl">누적 적립금 합계</div><div class="kval" id="k2">–</div></div>
   </div>
-  <div class="krow" style="grid-template-columns:repeat(4,1fr);">
-    <div class="kcard"><div class="klbl">1주차 적립금 합계</div><div class="kval" id="k3">–</div></div>
-    <div class="kcard"><div class="klbl">2주차 적립금 합계</div><div class="kval" id="k4">–</div></div>
-    <div class="kcard"><div class="klbl">3주차 적립금 합계</div><div class="kval" id="k6">–</div></div>
-    <div class="kcard"><div class="klbl">4주차 적립금 합계</div><div class="kval" id="k7">–</div></div>
+  <div class="krow" style="grid-template-columns:repeat(6,1fr);">
+    <div class="kcard"><div class="klbl">1주차</div><div class="kval" id="k3">–</div></div>
+    <div class="kcard"><div class="klbl">2주차</div><div class="kval" id="k4">–</div></div>
+    <div class="kcard"><div class="klbl">3주차</div><div class="kval" id="k6">–</div></div>
+    <div class="kcard"><div class="klbl">4주차</div><div class="kval" id="k7">–</div></div>
+    <div class="kcard"><div class="klbl">5주차</div><div class="kval" id="k8">–</div></div>
+    <div class="kcard"><div class="klbl">6주차</div><div class="kval" id="k9">–</div></div>
+  </div>
+  <div class="krow" style="grid-template-columns:repeat(6,1fr);">
+    <div class="kcard"><div class="klbl">7주차</div><div class="kval" id="k10">–</div></div>
+    <div class="kcard"><div class="klbl">8주차</div><div class="kval" id="k11">–</div></div>
+    <div class="kcard"><div class="klbl">9주차</div><div class="kval" id="k12">–</div></div>
+    <div class="kcard"><div class="klbl">10주차</div><div class="kval" id="k13">–</div></div>
+    <div class="kcard"><div class="klbl">11주차</div><div class="kval" id="k14">–</div></div>
+    <div class="kcard"><div class="klbl">12주차</div><div class="kval" id="k15">–</div></div>
   </div>
 
   <div class="fbar">
@@ -120,10 +130,18 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:12p
           <th style="min-width:140px;">인스타그램</th>
           <th style="min-width:70px;">구분</th>
           <th style="min-width:80px;" id="gcolHeader">특기</th>
-          <th class="r" style="min-width:100px;">1주차 적립금</th>
-          <th class="r" style="min-width:100px;">2주차 적립금</th>
-          <th class="r" style="min-width:100px;">3주차 적립금</th>
-          <th class="r" style="min-width:100px;">4주차 적립금</th>
+          <th class="r" style="min-width:90px;">1주차</th>
+          <th class="r" style="min-width:90px;">2주차</th>
+          <th class="r" style="min-width:90px;">3주차</th>
+          <th class="r" style="min-width:90px;">4주차</th>
+          <th class="r" style="min-width:90px;">5주차</th>
+          <th class="r" style="min-width:90px;">6주차</th>
+          <th class="r" style="min-width:90px;">7주차</th>
+          <th class="r" style="min-width:90px;">8주차</th>
+          <th class="r" style="min-width:90px;">9주차</th>
+          <th class="r" style="min-width:90px;">10주차</th>
+          <th class="r" style="min-width:90px;">11주차</th>
+          <th class="r" style="min-width:90px;">12주차</th>
           <th class="r" style="min-width:110px;">누적 적립금</th>
         </tr></thead>
         <tbody id="tbody"></tbody>
@@ -135,7 +153,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:12p
 
 <script>
 // ★ GAS 배포 후 아래 URL을 교체하세요
-const API_URL = 'https://script.google.com/macros/s/AKfycbznWxhM19QyATaLjk-PkRS6n54ZVfG04X3f1jQovCo8ZwHtETqFbM0qkw8HfkGtRIwU3Q/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbzXe_oJ-TS67YD5CbNi_ZS1YTVEX2AvvuGjRdMzMR7rH9YzsX89TKO_L_L4hIIewGEVBA/exec';
 
 let ALL = [];
 let filterGbn = 'all';
@@ -171,10 +189,10 @@ async function loadData() {
 function renderKPI() {
   document.getElementById('k1').innerHTML = ALL.length + '<span class="u">명</span>';
   document.getElementById('k2').innerHTML = fmtWon(ALL.reduce((s,m)=>s+toNum(m.accum),0));
-  document.getElementById('k3').innerHTML = fmtWon(ALL.reduce((s,m)=>s+toNum(m.w1),0));
-  document.getElementById('k4').innerHTML = fmtWon(ALL.reduce((s,m)=>s+toNum(m.w2),0));
-  document.getElementById('k6').innerHTML = fmtWon(ALL.reduce((s,m)=>s+toNum(m.w3),0));
-  document.getElementById('k7').innerHTML = fmtWon(ALL.reduce((s,m)=>s+toNum(m.w4),0));
+  const kIds = {w1:'k3',w2:'k4',w3:'k6',w4:'k7',w5:'k8',w6:'k9',w7:'k10',w8:'k11',w9:'k12',w10:'k13',w11:'k14',w12:'k15'};
+  Object.entries(kIds).forEach(([wk,kid])=>{
+    document.getElementById(kid).innerHTML = fmtWon(ALL.reduce((s,m)=>s+toNum(m[wk]),0));
+  });
   const GBN_ORDER = ['S급','A급','바이럴'];
   const gm = {};
   ALL.forEach(m => { const g = m.gbn||'미분류'; gm[g]=(gm[g]||0)+1; });
@@ -257,6 +275,14 @@ function renderTable() {
       <td class="r">${fmtWon(m.w2)}</td>
       <td class="r">${fmtWon(m.w3)}</td>
       <td class="r">${fmtWon(m.w4)}</td>
+      <td class="r">${fmtWon(m.w5)}</td>
+      <td class="r">${fmtWon(m.w6)}</td>
+      <td class="r">${fmtWon(m.w7)}</td>
+      <td class="r">${fmtWon(m.w8)}</td>
+      <td class="r">${fmtWon(m.w9)}</td>
+      <td class="r">${fmtWon(m.w10)}</td>
+      <td class="r">${fmtWon(m.w11)}</td>
+      <td class="r">${fmtWon(m.w12)}</td>
       <td class="r" style="font-weight:600;">${fmtWon(m.accum)}</td>
     </tr>`;
   }).join('');
@@ -264,10 +290,7 @@ function renderTable() {
   // 합계 행
   tbody.innerHTML += `<tr class="tr-sum">
     <td colspan="5">합계</td>
-    <td class="r">${fmtWon(rows.reduce((s,m)=>s+toNum(m.w1),0))}</td>
-    <td class="r">${fmtWon(rows.reduce((s,m)=>s+toNum(m.w2),0))}</td>
-    <td class="r">${fmtWon(rows.reduce((s,m)=>s+toNum(m.w3),0))}</td>
-    <td class="r">${fmtWon(rows.reduce((s,m)=>s+toNum(m.w4),0))}</td>
+    ${[1,2,3,4,5,6,7,8,9,10,11,12].map(n=>`<td class="r">${fmtWon(rows.reduce((s,m)=>s+toNum(m['w'+n]),0))}</td>`).join('')}
     <td class="r">${fmtWon(rows.reduce((s,m)=>s+toNum(m.accum),0))}</td>
   </tr>`;
 }
