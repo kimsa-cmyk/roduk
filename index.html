@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ROTOTOBEBE MKT 대시보드 — 로덬메이트</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
 <style>
-:root{--bg:#F7F7F5;--white:#FFF;--ink:#141414;--muted:#888;--border:#E4E4E0;--up:#1A6B3A;--up-bg:#EAF4EE;--dn:#C03020;--dn-bg:#FAECEA;--flat:#555;--flat-bg:#F0F0EE;--accent:#1A5FBB;--mono:'DM Mono',monospace;--sans:'Noto Sans KR',sans-serif;}
+:root{--bg:#F7F7F5;--white:#FFF;--ink:#141414;--muted:#888;--border:#E4E4E0;--up:#1A6B3A;--up-bg:#EAF4EE;--dn:#C03020;--dn-bg:#FAECEA;--flat:#555;--flat-bg:#F0F0EE;--accent:#1A5FBB;--mono:'Pretendard',sans-serif;--sans:'Pretendard',sans-serif;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:12px;line-height:1.5;}
 .topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;height:44px;gap:24px;position:sticky;top:0;z-index:101;}
@@ -89,6 +89,8 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:12p
     <div class="kcard"><div class="klbl">누적 적립금 합계</div><div class="kval" id="k2">–</div></div>
     <div class="kcard"><div class="klbl">1주차 적립 합계</div><div class="kval" id="k3">–</div></div>
     <div class="kcard"><div class="klbl">2주차 적립 합계</div><div class="kval" id="k4">–</div></div>
+    <div class="kcard"><div class="klbl">3주차 적립 합계</div><div class="kval" id="k6">–</div></div>
+    <div class="kcard"><div class="klbl">4주차 적립 합계</div><div class="kval" id="k7">–</div></div>
     <div class="kcard"><div class="klbl">구분별</div><div class="kval" id="k5" style="font-size:12px;line-height:1.8;">–</div></div>
   </div>
 
@@ -111,6 +113,8 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:12p
           <th style="min-width:80px;" id="gcolHeader">특기</th>
           <th class="r" style="min-width:100px;">1주차 적립</th>
           <th class="r" style="min-width:100px;">2주차 적립금</th>
+          <th class="r" style="min-width:100px;">3주차 적립금</th>
+          <th class="r" style="min-width:100px;">4주차 적립금</th>
           <th class="r" style="min-width:110px;">누적 적립금</th>
         </tr></thead>
         <tbody id="tbody"></tbody>
@@ -159,6 +163,8 @@ function renderKPI() {
   document.getElementById('k2').innerHTML = fmtWon(ALL.reduce((s,m)=>s+toNum(m.accum),0));
   document.getElementById('k3').innerHTML = fmtWon(ALL.reduce((s,m)=>s+toNum(m.w1),0));
   document.getElementById('k4').innerHTML = fmtWon(ALL.reduce((s,m)=>s+toNum(m.w2),0));
+  document.getElementById('k6').innerHTML = fmtWon(ALL.reduce((s,m)=>s+toNum(m.w3),0));
+  document.getElementById('k7').innerHTML = fmtWon(ALL.reduce((s,m)=>s+toNum(m.w4),0));
   const gm = {};
   ALL.forEach(m => { const g = m.gbn||'미분류'; gm[g]=(gm[g]||0)+1; });
   document.getElementById('k5').innerHTML = Object.entries(gm)
@@ -213,6 +219,8 @@ function renderTable() {
       <td>${esc(m.gcol)}</td>
       <td class="r">${fmtWon(m.w1)}</td>
       <td class="r">${fmtWon(m.w2)}</td>
+      <td class="r">${fmtWon(m.w3)}</td>
+      <td class="r">${fmtWon(m.w4)}</td>
       <td class="r" style="font-weight:600;">${fmtWon(m.accum)}</td>
     </tr>`;
   }).join('');
@@ -222,6 +230,8 @@ function renderTable() {
     <td colspan="5">합계</td>
     <td class="r">${fmtWon(rows.reduce((s,m)=>s+toNum(m.w1),0))}</td>
     <td class="r">${fmtWon(rows.reduce((s,m)=>s+toNum(m.w2),0))}</td>
+    <td class="r">${fmtWon(rows.reduce((s,m)=>s+toNum(m.w3),0))}</td>
+    <td class="r">${fmtWon(rows.reduce((s,m)=>s+toNum(m.w4),0))}</td>
     <td class="r">${fmtWon(rows.reduce((s,m)=>s+toNum(m.accum),0))}</td>
   </tr>`;
 }
