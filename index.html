@@ -96,9 +96,13 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:12p
 
   <div class="fbar">
     <span class="flbl">구분</span>
-    <button class="fbtn on" onclick="setFilter('all',this)">전체</button>
+    <button class="fbtn gbn-btn on" onclick="setFilter('all',this)">전체</button>
     <span id="filterBtns"></span>
-    <input class="fsearch" type="text" id="searchInput" placeholder="이름 / 인스타 검색" oninput="renderTable()">
+    <span style="width:1px;height:14px;background:var(--border);margin:0 6px;display:inline-block;vertical-align:middle;"></span>
+    <button class="fbtn media-btn on" onclick="setMedia('all',this)">전체</button>
+    <button class="fbtn media-btn" onclick="setMedia('사진',this)">사진</button>
+    <button class="fbtn media-btn" onclick="setMedia('영상',this)">영상</button>
+    <input class="fsearch" type="text" id="searchInput" placeholder="이름 / 인스타 검색" oninput="renderTable()" style="margin-left:auto;">
   </div>
 
   <div class="card">
@@ -130,6 +134,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbznWxhM19QyATaLjk-PkRS6
 
 let ALL = [];
 let filterGbn = 'all';
+let filterMedia = 'all';
 
 async function loadData() {
   if (API_URL === 'YOUR_GAS_URL_HERE') {
@@ -172,14 +177,29 @@ function renderKPI() {
 }
 
 function buildFilters() {
+  const ORDER = ['S급','A급','바이럴'];
   const gbnSet = [...new Set(ALL.map(m=>m.gbn).filter(Boolean))];
+  gbnSet.sort((a,b) => {
+    const ai = ORDER.indexOf(a), bi = ORDER.indexOf(b);
+    if (ai===-1 && bi===-1) return a.localeCompare(b,'ko');
+    if (ai===-1) return 1;
+    if (bi===-1) return -1;
+    return ai - bi;
+  });
   document.getElementById('filterBtns').innerHTML = gbnSet
-    .map(g=>`<button class="fbtn" onclick="setFilter('${g}',this)">${g}</button>`).join('');
+    .map(g=>`<button class="fbtn gbn-btn" onclick="setFilter('${g}',this)">${g}</button>`).join('');
 }
 
 function setFilter(val, el) {
   filterGbn = val;
-  document.querySelectorAll('.fbar .fbtn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.fbar .gbn-btn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  renderTable();
+}
+
+function setMedia(val, el) {
+  filterMedia = val;
+  document.querySelectorAll('.fbar .media-btn').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
   renderTable();
 }
@@ -188,8 +208,9 @@ function renderTable() {
   const q = document.getElementById('searchInput').value.toLowerCase();
   const rows = ALL.filter(m => {
     const og = filterGbn==='all' || m.gbn===filterGbn;
+    const om = filterMedia==='all' || (m.gcol||'').includes(filterMedia);
     const oq = !q || m.name.toLowerCase().includes(q) || m.insta.toLowerCase().includes(q);
-    return og && oq;
+    return og && om && oq;
   });
 
   document.getElementById('tableCount').textContent = rows.length + '명';
