@@ -161,7 +161,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:12p
 
 <!-- 제품 확인 모달 -->
 <div id="prodModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.45);z-index:300;align-items:center;justify-content:center;">
-  <div style="background:#fff;border-radius:8px;padding:20px 22px;max-width:640px;width:92%;max-height:80vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.18);">
+  <div style="background:#fff;border-radius:8px;padding:20px 22px;max-width:760px;width:92%;max-height:80vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.18);">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
       <span id="modalTitle" style="font-size:13px;font-weight:600;"></span>
       <button onclick="closeProdModal()" style="border:none;background:none;cursor:pointer;font-size:18px;color:#888;line-height:1;">✕</button>
@@ -171,6 +171,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:12p
         <th>단독 상품</th>
         <th>상품명</th>
         <th>최종 구매 내역</th>
+        <th class="r">업로드 여부</th>
       </tr></thead>
       <tbody id="prodTbody"></tbody>
     </table>
@@ -340,11 +341,20 @@ function showProducts(i) {
     empty.style.display = '';
   } else {
     empty.style.display = 'none';
-    tbody.innerHTML = prods.map(p => `<tr>
-      <td>${esc(p.dandog)}</td>
-      <td>${esc(p.pname)}</td>
-      <td>${esc(p.pfinal)}</td>
-    </tr>`).join('');
+    tbody.innerHTML = prods.map(p => {
+      const uploaded = p.upload || '';
+      const isUp = uploaded.includes('업로드') && !uploaded.includes('미');
+      const upStyle = isUp ? 'color:var(--up);font-weight:600;' : 'color:var(--muted);';
+      const upCell = p.link
+        ? `<a href="${esc(p.link)}" target="_blank" style="${upStyle}text-decoration:none;">${esc(uploaded)||'–'} ↗</a>`
+        : `<span style="${upStyle}">${esc(uploaded)||'–'}</span>`;
+      return `<tr>
+        <td>${esc(p.dandog)}</td>
+        <td>${esc(p.pname)}</td>
+        <td>${esc(p.pfinal)}</td>
+        <td class="r">${upCell}</td>
+      </tr>`;
+    }).join('');
   }
   const modal = document.getElementById('prodModal');
   modal.style.display = 'flex';
